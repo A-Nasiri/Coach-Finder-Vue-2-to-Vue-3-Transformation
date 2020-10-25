@@ -7,7 +7,7 @@ export default {
         return {
             token: null,
             userId: null,
-            tokenExpiration: null
+            didAutoLogout: false
         }
     },
     getters,
