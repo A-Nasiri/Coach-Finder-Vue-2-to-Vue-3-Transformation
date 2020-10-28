@@ -8,6 +8,9 @@
 </template>
 
 <script>
+import { watch, computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import TheHeader from './components/layout/TheHeader';
 
 export default {
@@ -15,21 +18,36 @@ export default {
   components: {
     TheHeader
   },
-  created() {
-    this.$store.dispatch('tryLogin');
-  },
-  watch: {
-    didAutoLogout(curValue, oldValue) {
-      if (curValue && curValue !== oldValue) {
-        this.$router.replace('/coaches');
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    store.dispatch('tryLogin');
+
+    const didAutoLogout = computed(() => store.getters.didAutoLogout);
+
+
+    watch(didAutoLogout, (newVal, oldVal) => {
+      if (newVal && newVal !== oldVal) {
+        router.replace('/coaches');
       }
-    }
+    });
   },
-  computed: {
-    didAutoLogout() {
-      return this.$store.getters.didAutoLogout;
-    }
-  }
+  // created() {
+  //   store.dispatch('tryLogin');
+  // },
+  // watch: {
+  //   didAutoLogout(curValue, oldValue) {
+  //     if (curValue && curValue !== oldValue) {
+  //       this.$router.replace('/coaches');
+  //     }
+  //   }
+  // },
+  // computed: {
+  //   didAutoLogout() {
+  //     return this.$store.getters.didAutoLogout;
+  //   }
+  // }
 }
 </script>
 
