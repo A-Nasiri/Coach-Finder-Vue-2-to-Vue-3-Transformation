@@ -29,34 +29,62 @@
 </template>
 
 <script>
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+
 export default {
   props: ['id'],
-  data() {
+  setup(props) {
+    const store = useStore();
+    const route = useRoute();
+    const selectedCoach = ref(null);
+
+    (function getSelectedCoach() {
+      selectedCoach.value = store.getters['coaches/coaches']
+    .find((coach) => coach.id === props.id)
+    })();
+
+    const fullName = computed(() => selectedCoach.value.firstName + ' ' + selectedCoach.value.lastName);
+    const areas = computed(() => selectedCoach.value.areas);
+    const contactLink = computed(() => route.path + '/contact');
+    const rate = computed(() => selectedCoach.value.hourlyRate);
+    const description = computed(() => selectedCoach.value.description);
+
     return {
-      selectedCoach: null
+      fullName,
+      areas,
+      contactLink,
+      rate,
+      description
     }
   },
-  computed: {
-    fullName() {
-      return this.selectedCoach.firstName + ' ' + this.selectedCoach.lastName;
-    },
-    areas() {
-      return this.selectedCoach.areas;
-    },
-    contactLink() {
-      return this.$route.path + '/contact';
-    },
-    rate() {
-      return this.selectedCoach.hourlyRate;
-    },
-    description() {
-      return this.selectedCoach.description;
-    }
-  },
-  created() {
-    this.selectedCoach = this.$store.getters['coaches/coaches']
-    .find((coach) => coach.id === this.id)
-  }
+  // data() {
+  //   return {
+  //     selectedCoach: null
+  //   }
+  // },
+  // computed: {
+  //   fullName() {
+  //     return this.selectedCoach.firstName + ' ' + this.selectedCoach.lastName;
+  //   },
+  //   areas() {
+  //     return this.selectedCoach.areas;
+  //   },
+  //   contactLink() {
+  //     return this.$route.path + '/contact';
+  //   },
+  //   rate() {
+  //     return this.selectedCoach.hourlyRate;
+  //   },
+  //   description() {
+  //     return this.selectedCoach.description;
+  //   }
+  // },
+  // created() {
+  //   this.selectedCoach = this.$store.getters['coaches/coaches']
+  //   .find((coach) => coach.id === this.id)
+  // }
 }
 </script>
 
