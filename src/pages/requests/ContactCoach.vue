@@ -2,13 +2,13 @@
   <form @submit.prevent="submitForm">
     <div class="form-control">
       <label for="email">Your Email</label>
-      <input type="email" id="email" v-model.trim="email">
+      <input type="email" id="email" v-model.trim="formData.email">
     </div>
     <div class="form-control">
       <label for="message">Message</label>
-      <textarea id="message" rows="5" v-model.trim="message"></textarea>
+      <textarea id="message" rows="5" v-model.trim="formData.message"></textarea>
     </div>
-    <p class="errors" v-if="!formIsValid">Please fix the errors above and submit again!</p>
+    <p class="errors" v-if="!formData.formIsValid">Please fix the errors above and submit again!</p>
     <div class="actions">
       <base-button>Send Message</base-button>
     </div>
@@ -16,31 +16,67 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useStore } from 'vuex';
+
 export default {
-  data() {
-    return {
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
+    const store = useStore();
+
+    const formData = reactive({
       email: '',
       message: '',
       formIsValid: true
-    }
-  },
-  methods: {
-    submitForm() {
-      this.formIsValid = true;
-      if (this.email === '' || !this.email.includes('@') || this.message === '') {
-        this.formIsValid = false;
+    });
+
+    function submitForm() {
+      formData.formIsValid = true;
+      if (formData.email === '' || !formData.email.includes('@') || formData.message === '') {
+        formData.formIsValid = false;
         return;
       }
 
-      this.$store.dispatch('requests/contactCoach', {
-        email: this.email,
-        message: this.message,
-        coachId: this.$route.params.id
-      })
+      store.dispatch('requests/contactCoach', {
+        email: formData.email,
+        message: formData.message,
+        coachId: route.params.id
+      });
 
-      this.$router.replace('/coaches');
+      router.replace('/coaches');
     }
-  }
+
+    return {
+      formData,
+      submitForm
+    }
+  },
+  // data() {
+  //   return {
+  //     email: '',
+  //     message: '',
+  //     formIsValid: true
+  //   }
+  // },
+  // methods: {
+  //   submitForm() {
+  //     this.formIsValid = true;
+  //     if (this.email === '' || !this.email.includes('@') || this.message === '') {
+  //       this.formIsValid = false;
+  //       return;
+  //     }
+
+  //     this.$store.dispatch('requests/contactCoach', {
+  //       email: this.email,
+  //       message: this.message,
+  //       coachId: this.$route.params.id
+  //     })
+
+  //     this.$router.replace('/coaches');
+  //   }
+  // }
 }
 </script>
 
