@@ -13,19 +13,35 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
 export default {
     props: ['id', 'firstName', 'lastName', 'rate', 'areas'],
-    computed: {
-        fullName() {
-            return this.firstName + ' ' + this.lastName;
-        },
-        coachContactLink() {
-            return this.$route.path + '/' + this.id + '/contact';
-        },
-        coachDetailsLink() {
-            return this.$route.path + '/' + this.id;
-        }
-    }
+    setup(props) {
+      const route = useRoute();
+
+      const fullName = computed(() => props.firstName + ' ' + props.lastName);
+      const coachContactLink = computed(() => route.path + '/' + props.id + '/contact');
+      const coachDetailsLink = computed(() => route.path + '/' + props.id);
+
+      return {
+        fullName,
+        coachContactLink,
+        coachDetailsLink
+      }
+    },
+    // computed: {
+    //     fullName() {
+    //         return this.firstName + ' ' + this.lastName;
+    //     },
+    //     coachContactLink() {
+    //         return this.$route.path + '/' + this.id + '/contact';
+    //     },
+    //     coachDetailsLink() {
+    //         return this.$route.path + '/' + this.id;
+    //     }
+    // }
 }
 </script>
 
