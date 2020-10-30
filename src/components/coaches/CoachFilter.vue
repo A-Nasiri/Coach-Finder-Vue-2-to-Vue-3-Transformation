@@ -21,7 +21,7 @@ import { reactive } from 'vue';
 
 export default {
     emits: ['change-filter'],
-    setup(props, context) {
+    setup(_, context) {
       let filters = reactive({
         frontend: true,
         backend: true,
